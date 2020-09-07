@@ -1,0 +1,11 @@
+
+@mixin background-gradient($color1, $color2) {
+  background: $color1;
+  background: linear-gradient(135deg, $color1 0%, $color2 38%);
+}
+
+@mixin background-gradient-appbar() {
+  background: #232c3a !important;
+  background: linear-gradient(135deg, #232c3a  0%, #232c3a  100%) !important;
+  filter: progid:dximagetransform.microsoft.gradient(startColorstr='#232c3a', endColorstr='#232c3a', GradientType=0);
+}

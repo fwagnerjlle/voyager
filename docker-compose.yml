@@ -1,0 +1,47 @@
+version: '3.4'
+
+services:
+  voyager-mars-mysql:
+    image: "mysql:5"
+    container_name: voyager-mars-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./volumes/mysql/data:/var/lib/mysql
+      - ./volumes/mysql/config:/etc/mysql/conf.d
+      - ./volumes/mysql/init:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=marsrover
+      - MYSQL_USER=mars
+      - MYSQL_PASSWORD=rover
+  voyager-mars-backend:
+    build: ./docker-files/base-node-adonisjs/
+    container_name: voyager-mars-backend
+    ports:
+      - "3333:3333"
+      - "9229:9229"
+    volumes:
+      - ./source/voyager-mars-back:/app
+    command: bash -c "cd /app && ./check-node-dependencies.sh && /wait-for-it.sh --timeout=0 voyager-mars-mysql:3306 -- adonis migration:run && adonis seed && npm run dev-debug"
+    environment:
+      - "HOST=0.0.0.0"
+      - "DB_CONNECTION=mysql"
+      - "DB_HOST=voyager-mars-mysql"
+      - "DB_PORT=3306"
+      - "DB_USER=mars"
+      - "DB_PASSWORD=rover"
+      - "DB_DATABASE=marsrover"
+  voyager-mars-frontend:
+    build: ./docker-files/base-node/
+    container_name: voyager-mars-frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./source/voyager-mars-front:/app
+    command: bash -c "cd /app && ./check-node-dependencies.sh && npm run serve"
+    environment:
+      - "HOST=0.0.0.0"
+      - "TERM=xterm-256color"
+    tty: true

@@ -1,0 +1,14 @@
+# Node modules
+node_modules
+
+# Adonis directory for storing tmp files
+tmp
+
+# The development sqlite file
+database/*.sqlite
+
+package-lock.json
+
+# Coverage directory used by tools like istanbul
+coverage
+.nyc_output

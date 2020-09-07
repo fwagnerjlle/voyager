@@ -1,0 +1,20 @@
+{
+  "reporter": [
+    "text",
+    "lcov"
+  ],
+  "all": true,
+  "include": [
+    "app/**/*.js"
+  ],
+  "exclude": [
+    "app/Models/User.js",
+    "app/Models/Token.js"
+  ],
+  "check-coverage": true,
+  "per-file": true,
+  "lines": 80,
+  "branches": 80,
+  "statements": 0,
+  "functions": 80
+}

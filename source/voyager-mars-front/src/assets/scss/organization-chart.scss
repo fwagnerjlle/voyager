@@ -1,0 +1,44 @@
+.drawer-rigth {
+  .drawer-rigth-header {
+    height: 200px;
+
+    .close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+    }
+
+    .avatar {
+      cursor: pointer;
+    }
+
+    .desciption {
+      padding: 200px 30px 0 30px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+
+      .description-names {
+        padding: 0 30px;
+        height: 80px;
+      }
+
+      .description-team {
+        padding: 0 30px;
+        height: 70px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        color: #7c7c7c;
+        font-size: 16px;
+      }
+    }
+  }
+
+  .tabs-info {
+    margin-top: 70px;
+  }
+}

@@ -1,0 +1,9 @@
+.setting-box {
+  &:hover {
+    cursor: pointer;
+    background-color: #e3f2fd;
+    transition: all 0.4s ease 0s;
+    -moz-transition: all 0.4s ease 0s;
+    -webkit-transition: all 0.4s ease 0s;
+  }
+}

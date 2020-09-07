@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  voyager-mars-back-test:
+    build: ../../docker-files/base-node-adonisjs/
+    container_name: voyager-mars-back-test
+    volumes:
+      - ../../source/voyager-mars-back:/app
+    # Run all
+    command: bash -c "rm -rf ./database/.sqlite && npm run test"
+    # Run only one test file without coverage
+    # command: bash -c "rm -rf ./database/.sqlite && adonis test -f company-controller.spec.js"
+    # Run only one test file and check coverege on one file
+    # command: bash -c "rm -rf ./database/.sqlite && node_modules/.bin/nyc --exclude='' --include=app/Controllers/Http/CompanyController.js adonis test -f company-controller.spec.js"
+    environment:
+      - TERM=xterm-256color
+      - DB_CONNECTION=sqlite
+    tty: true

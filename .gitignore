@@ -1,0 +1,6 @@
+#ignore mysql data
+volumes/mysql/data/*
+volumes/mysql-test/data/*
+
+#vscode projec file
+.vscode

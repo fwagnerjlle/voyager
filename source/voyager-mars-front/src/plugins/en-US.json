@@ -1,0 +1,55 @@
+{
+  "account": {
+    "join": "Join",
+    "user": "User",
+    "userName": "User name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signInto": "Sign into your account",
+    "noAccount": "Still no account?",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordInto": "Input your registered email to reset your password",
+    "resetYouPassword": "Reset Your Password",
+    "accountAlready": "Have account already? Please go to",
+    "phone": "Phone",
+    "profile": "Profile",
+    "personalInformation": "Personal information",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "userData": "User data"
+  },
+  "error": {
+    "authuser-disabled": "User disabled",
+    "authinvalid-email": "Invalid email format",
+    "authuser-not-found": "User not found",
+    "authwrong-password": "Incorrect password",
+    "invalidPasswordUser": "Usuario o contraseña invalida",
+    "fieldRequired": "Este campo es requerido",
+    "passwordsMatch": "Las contraseñas deben coincidir",
+    "userExist": "Usuario existente",
+    "emailNotBelong": "El email no pertenece a la intranet",
+    "invalidCredentials": "User or password is invalid"
+  },
+  "action": {
+    "Save": "Save",
+    "SignIn": "Sing In",
+    "SignInGoogle": "Inicia con Google",
+    "SignUp": "Sign Up",
+    "LogOut": "LogOut"
+  },
+  "view": {
+    "Home": "Home"
+  },
+  "date": "Date",
+  "language": {
+    "Text": "Language",
+    "es": "Español",
+    "en": "English"
+  },
+  "rightReserved": "Copyright © 2017. All RIGHT RESERVED.",
+  "author": "AUTHOR Gabriel Aponte",
+  "termsRegister": "By clicking Sign Up, you agree to our",
+  "terms": "Terms"
+}
