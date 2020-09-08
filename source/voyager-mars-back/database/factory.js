@@ -28,3 +28,24 @@ Factory.blueprint('App/Models/Company', async ( faker) => {
     email: faker.email(),
   };
 });
+
+Factory.blueprint('App/Models/Plateau', async ( faker) => {
+  return {
+    code: faker.word({ length: 4 }),
+    name: faker.name(),
+    upper_x_position: 15,
+    upper_y_position: 15,
+    id_company: 1,
+  };
+});
+
+Factory.blueprint('App/Models/Rover', async ( faker) => {
+  return {
+    code: faker.word({ length: 4 }),
+    name: faker.name(),
+    x_position: 1,
+    y_position: 1,
+    cardinal_direction: 'N',
+    id_company: 1,
+  };
+});

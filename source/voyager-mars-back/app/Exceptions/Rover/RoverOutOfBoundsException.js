@@ -10,7 +10,7 @@ class RoverOutOfBoundsException extends LogicalException {
   }
 
   handle(error, { response }) {
-    response.status(HttpStatus.CONFLICT).send(error.message);
+    response.status(HttpStatus.EXPECTATION_FAILED).send(error.message);
   }
 }
 

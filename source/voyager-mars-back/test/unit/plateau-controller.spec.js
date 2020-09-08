@@ -6,6 +6,8 @@ const HttpStatus = use('http-status-codes');
 const Suite = use('Test/Suite')('Plateau');
 
 const Plateau = use('App/Models/Plateau');
+const Company = use('App/Models/Company');
+const Rover = use('App/Models/Rover');
 
 const { test, trait, beforeEach, afterEach } = Suite;
 
@@ -13,6 +15,8 @@ trait('Test/ApiClient');
 
 let plateau1;
 let plateau2;
+let company1;
+let rover1;
 
 beforeEach(async () => {
   plateau1 = await Factory.model('App/Models/Plateau').create();
@@ -21,6 +25,8 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await Plateau.query().delete();
+  await Company.query().delete();
+  await Rover.query().delete();
 });
 
 test('list plateaus', async ({ client, assert }) => {
@@ -137,13 +143,16 @@ test('create plateau - not implemented', async ({ client, assert }) => {
 });
 
 test('create plateau', async ({ client, assert }) => {
+
+  company1 = await Factory.model('App/Models/Company').create();
+
   //arrange
   const data = {
     code: 'Plateau1',
     name: 'Mars',
     upper_x_position: 10,
     upper_y_position: 10,
-    id_company: 1,
+    id_company: company1.id,
   }
 
   //act
@@ -168,6 +177,26 @@ test('create plateau - code exists', async ({ client, assert }) => {
   //arrange
   const data = {
     code: plateau1.code,
+    name: 'Mars2',
+    upper_x_position: 10,
+    upper_y_position: 10,
+    id_company: 50,
+  };
+
+  //act
+  const response = await client
+    .post('api/plateaus')
+    .send(data)
+    .end();
+
+  //assert
+  response.assertStatus(HttpStatus.CONFLICT);
+});
+
+test('create plateau - already exist a plateau at company', async ({ client, assert }) => {
+  //arrange
+  const data = {
+    code: 'New Plateau',
     name: 'Mars2',
     upper_x_position: 10,
     upper_y_position: 10,
@@ -282,4 +311,17 @@ test('delete plateau - invalid id', async ({ client, assert }) => {
 
   //assert
   response.assertStatus(HttpStatus.BAD_REQUEST);
+});
+
+test('delete plateau - has rovers', async ({ client, assert }) => {
+
+  rover1 = await Factory.model('App/Models/Rover').create();
+
+  //act
+  const response = await client
+    .delete(`api/plateaus/${plateau1.id}`)
+    .end();
+
+  //assert
+  response.assertStatus(HttpStatus.PRECONDITION_FAILED);
 });

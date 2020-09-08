@@ -6,6 +6,7 @@ const HttpStatus = use('http-status-codes');
 const Suite = use('Test/Suite')('Company');
 
 const Company = use('App/Models/Company');
+const Plateau = use('App/Models/Plateau');
 
 const { test, trait, beforeEach, afterEach } = Suite;
 
@@ -13,6 +14,7 @@ trait('Test/ApiClient');
 
 let company1;
 let company2;
+let plateau1;
 
 beforeEach(async () => {
   company1 = await Factory.model('App/Models/Company').create();
@@ -21,6 +23,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   await Company.query().delete();
+  await Plateau.query().delete();
 });
 
 test('list companies', async ({ client, assert }) => {
@@ -257,4 +260,19 @@ test('delete company - invalid id', async ({ client, assert }) => {
 
   //assert
   response.assertStatus(HttpStatus.BAD_REQUEST);
+});
+
+test('delete company - has plateaus', async ({ client, assert }) => {
+
+  plateau1 = await Factory.model('App/Models/Plateau').create();
+  plateau1.id_company = company1.id;
+  plateau1.save()
+
+  //act
+  const response = await client
+    .delete(`api/companies/${company1.id}`)
+    .end();
+
+  //assert
+  response.assertStatus(HttpStatus.PRECONDITION_FAILED);
 });

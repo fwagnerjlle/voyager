@@ -177,6 +177,10 @@ class RoverController {
   async destroy ({ params, request, response }) {
     const rover = await Rover.query().where({id: params.id}).first();
 
+    if(!rover) {
+      throw new RoverNotFoundException(params.id);
+    }
+
     return rover.delete();
   }
 

@@ -10,7 +10,7 @@ class RoverAlreadyExistException extends LogicalException {
   }
 
   handle(error, { response }) {
-    response.status(HttpStatus.BAD_REQUEST).send(error.message);
+    response.status(HttpStatus.CONFLICT).send(error.message);
   }
 }
 

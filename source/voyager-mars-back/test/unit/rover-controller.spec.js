@@ -6,6 +6,7 @@ const HttpStatus = use('http-status-codes');
 const Suite = use('Test/Suite')('Rover');
 
 const Rover = use('App/Models/Rover');
+const Plateau = use('App/Models/Plateau');
 
 const { test, trait, beforeEach, afterEach } = Suite;
 
@@ -13,14 +14,17 @@ trait('Test/ApiClient');
 
 let rover1;
 let rover2;
+let plateau1;
 
 beforeEach(async () => {
   rover1 = await Factory.model('App/Models/Rover').create();
   rover2 = await Factory.model('App/Models/Rover').create();
+  plateau1 = await Factory.model('App/Models/Plateau').create();
 });
 
 afterEach(async () => {
   await Rover.query().delete();
+  await Plateau.query().delete();
 });
 
 test('list rovers', async ({ client, assert }) => {
@@ -218,10 +222,10 @@ test('show rover', async ({ client, assert }) => {
   assert.equal(response.body.code, rover2.code);
   assert.equal(response.body.name, rover2.name);
   assert.equal(response.body.description, rover2.description);
-  assert.equal(response.body.x_position, data.x_position);
-  assert.equal(response.body.y_position, data.y_position);
-  assert.equal(response.body.cardinal_direction, data.cardinal_direction);
-  assert.equal(response.body.id_company, data.id_company);
+  assert.equal(response.body.x_position, rover2.x_position);
+  assert.equal(response.body.y_position, rover2.y_position);
+  assert.equal(response.body.cardinal_direction, rover2.cardinal_direction);
+  assert.equal(response.body.id_company, rover2.id_company);
   assert.equal(response.body.created_at, rover2.created_at);
   assert.equal(response.body.updated_at, rover2.updated_at);
 });
@@ -244,6 +248,7 @@ test('update rover', async ({ client, assert }) => {
     x_position: 15,
     y_position: 12,
     cardinal_direction: 'N',
+    id_company: 1,
   }
 
   //act

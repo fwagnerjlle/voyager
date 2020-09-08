@@ -85,7 +85,6 @@ class PlateauController {
     }
 
     const plateauCompanyExist = await Plateau.query().where({ id_company }).getCount() > 0;
-
     if(plateauCompanyExist) {
       throw new PlateauAlreadyExistAtCompanyException();
     }
@@ -170,6 +169,10 @@ class PlateauController {
   async destroy ({ params, request, response }) {
     const plateau = await Plateau.query().where({id: params.id}).first();
 
+    if(!plateau) {
+      throw new PlateauNotFoundException(params.id);
+    }
+     
     const roverCount = await Rover.query().where({ id_company: plateau.id_company }).getCount() > 0;
     if (roverCount){
       throw new PlateauHasRoversException();
