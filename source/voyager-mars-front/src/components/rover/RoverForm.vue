@@ -122,14 +122,11 @@ export default {
 
         try {
           if (!this.value.id) {
-            const response = await api.create(this.rover);
-            this.rover = response.data;
-            Object.assign(this.value, this.rover);
-            this.$emit('new:rover');
+            await api.create(this.rover);
           } else {
             await api.update(this.rover.id, this.rover);
-            Object.assign(this.value, this.rover);
           }
+          this.$emit('edit:rover');
           this.close();
         } catch (error) {
           this.$store.commit('SET_MESSAGE', error.response.data);

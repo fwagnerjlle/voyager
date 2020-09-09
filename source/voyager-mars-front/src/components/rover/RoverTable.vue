@@ -66,13 +66,12 @@
       v-if="showRoverDialog"
       v-model="currentRover"
       @showDialog="showRoverDialog = $event"
-      @new:rover="newRoverHandler()"
+      @edit:rover="createOrEditRoverHandler()"
     ></RoverForm>
     <MoveRoverForm
       v-if="showMoveRoverDialog"
       v-model="currentRover"
       @showDialog="showMoveRoverDialog = $event"
-      @new:rover="newRoverHandler()"
     ></MoveRoverForm>
   </div>
 </template>
@@ -151,8 +150,9 @@
         this.currentRover = {};
         this.showRoverDialog = true;
       },
-      newRoverHandler() {
-        this.rovers.push(this.currentRover);
+      async createOrEditRoverHandler() {
+        const { data: rovers } = await api.fetch({ search: this.search });
+        this.rovers = rovers;
       },
       editRover(rover) {
         this.currentRover = rover;

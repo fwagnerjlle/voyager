@@ -154,6 +154,12 @@ class PlateauController {
 
     /* istanbul ignore else */
     if (id_company != plateau.id_company){
+
+      const plateauCompanyExist = await Plateau.query().where({ id_company }).getCount() > 0;
+      if(plateauCompanyExist) {
+        throw new PlateauAlreadyExistAtCompanyException();
+      }
+
       const rovers_at_plateau = await Rover.query().where('id_company', plateau.id_company).getCount() > 0;
       /* istanbul ignore else */
       if (rovers_at_plateau){

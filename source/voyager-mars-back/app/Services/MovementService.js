@@ -51,13 +51,13 @@ class MovementService {
      * @param {Rover} rover 
      */
     static moveRoverPosition(rover){
+        /* istanbul ignore else */
         if (rover.cardinal_direction == CardinalDirections.NORTH.direction){
             rover.y_position++;
         } else if (rover.cardinal_direction == CardinalDirections.SOUTH.direction){
             rover.y_position--;
         } else if (rover.cardinal_direction == CardinalDirections.EAST.direction){
             rover.x_position++;
-        /* istanbul ignore else */
         } else if (rover.cardinal_direction == CardinalDirections.WEST.direction){
             rover.x_position--;
         }

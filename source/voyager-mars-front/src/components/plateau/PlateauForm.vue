@@ -111,14 +111,11 @@ export default {
 
         try {
           if (!this.value.id) {
-            const response = await api.create(this.plateau);
-            this.plateau = response.data;
-            Object.assign(this.value, this.plateau);
-            this.$emit('new:plateau');
+            await api.create(this.plateau);
           } else {
             await api.update(this.plateau.id, this.plateau);
-            Object.assign(this.value, this.plateau);
           }
+          this.$emit('edit:plateau');
           this.close();
         } catch (error) {
           this.$store.commit('SET_MESSAGE', error.response.data);

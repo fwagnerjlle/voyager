@@ -54,7 +54,7 @@
       v-if="showPlateauDialog"
       v-model="currentPlateau"
       @showDialog="showPlateauDialog = $event"
-      @new:plateau="newPlateauHandler()"
+      @edit:plateau="createOrEditPlateauHandler()"
     ></PlateauForm>
   </div>
 </template>
@@ -127,8 +127,9 @@
         this.currentPlateau = {};
         this.showPlateauDialog = true;
       },
-      newPlateauHandler() {
-        this.plateaus.push(this.currentPlateau);
+      async createOrEditPlateauHandler() {
+        const { data: plateaus } = await api.fetch({ search: this.search });
+        this.plateaus = plateaus;
       },
       editPlateau(plateau) {
         this.currentPlateau = plateau;
