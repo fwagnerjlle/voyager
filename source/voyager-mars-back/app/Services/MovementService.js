@@ -17,7 +17,7 @@ class MovementService {
      * @param {char[]} chars 
      * @param {Rover} rover 
      */
-    moveRover(chars, rover){
+    static moveRover(chars, rover){
         for (var i = 0; i < chars.length; i++) {
             if (chars[i] == Movements.LEFT){
                 rover.cardinal_direction = this.getDirection(rover.cardinal_direction).leftMovement;
@@ -36,7 +36,7 @@ class MovementService {
      * Get CardinalDirection from a direction
      * @param {char} direction 
      */
-    getDirection(direction) {
+    static getDirection(direction) {
         switch(direction){
             case CardinalDirections.NORTH.direction:
                 return CardinalDirections.NORTH;
@@ -53,7 +53,7 @@ class MovementService {
      * Move (x or y direction) a rover
      * @param {Rover} rover 
      */
-    moveRoverPosition(rover){
+    static moveRoverPosition(rover){
         if (rover.cardinal_direction == CardinalDirections.NORTH.direction){
             rover.y_position++;
         } else if (rover.cardinal_direction == CardinalDirections.SOUTH.direction){

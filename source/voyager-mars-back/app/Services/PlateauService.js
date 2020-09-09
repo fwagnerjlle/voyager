@@ -1,5 +1,6 @@
 'use strict';
 
+const NoPlateauCreatedException = use('App/Exceptions/Plateau/NoPlateauCreatedException');
 const RoverExceededPlateauSizeException = use('App/Exceptions/Rover/RoverExceededPlateauSizeException');
 const Plateau = use('App/Models/Plateau');
 
@@ -19,7 +20,7 @@ class PlateauService {
      * @param {int} id_company 
      * @param {String} roverCode 
      */
-    validatePlateauBoundaries(plateau, rover_x_position, rover_y_position, id_company, roverCode){
+    static validatePlateauAndBoundaries(plateau, rover_x_position, rover_y_position, id_company, roverCode){
         if (plateau){
             if (rover_x_position > plateau.upper_x_position || rover_y_position > plateau.upper_y_position){
                 throw new RoverExceededPlateauSizeException(roverCode, plateau.code);

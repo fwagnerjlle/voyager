@@ -7,6 +7,7 @@ const Suite = use('Test/Suite')('Rover');
 
 const Rover = use('App/Models/Rover');
 const Plateau = use('App/Models/Plateau');
+const Company = use('App/Models/Company');
 
 const { test, trait, beforeEach, afterEach } = Suite;
 
@@ -15,16 +16,19 @@ trait('Test/ApiClient');
 let rover1;
 let rover2;
 let plateau1;
+let company1;
 
 beforeEach(async () => {
   rover1 = await Factory.model('App/Models/Rover').create();
   rover2 = await Factory.model('App/Models/Rover').create();
+  company1 = await Factory.model('App/Models/Company').create();
   plateau1 = await Factory.model('App/Models/Plateau').create();
 });
 
 afterEach(async () => {
   await Rover.query().delete();
   await Plateau.query().delete();
+  await Company.query().delete();
 });
 
 test('list rovers', async ({ client, assert }) => {
@@ -160,6 +164,9 @@ test('create rover - not implemented', async ({ client, assert }) => {
 });
 
 test('create rover', async ({ client, assert }) => {
+  plateau1.id_company = company1.id;
+  await plateau1.save();
+
   //arrange
   const data = {
     code: 'ROVER1',
@@ -167,7 +174,7 @@ test('create rover', async ({ client, assert }) => {
     x_position: 10,
     y_position: 8,
     cardinal_direction: 'S',
-    id_company: 1,
+    id_company: company1.id,
   }
 
   //act
@@ -189,6 +196,30 @@ test('create rover', async ({ client, assert }) => {
   assert.exists(response.body.updated_at);
 });
 
+test('create rover - RoverExceededPlateauSizeException', async ({ client, assert }) => {
+  plateau1.id_company = company1.id;
+  await plateau1.save();
+
+  //arrange
+  const data = {
+    code: 'ROVER1',
+    name: 'Rover 1',
+    x_position: 20,
+    y_position: 8,
+    cardinal_direction: 'S',
+    id_company: company1.id,
+  }
+
+  //act
+  const response = await client
+  .post('api/rovers')
+  .send(data)
+  .end();
+  
+  //assert
+  response.assertStatus(HttpStatus.PRECONDITION_FAILED);
+});
+
 test('create rover - code exists', async ({ client, assert }) => {
   //arrange
   const data = {
@@ -197,7 +228,7 @@ test('create rover - code exists', async ({ client, assert }) => {
     x_position: 10,
     y_position: 8,
     cardinal_direction: 'S',
-    id_company: 1,
+    id_company: company1.id,
   };
 
   //act
@@ -241,17 +272,21 @@ test('edit rover - not implemented', async ({ client, assert }) => {
 });
 
 test('update rover', async ({ client, assert }) => {
+
+  plateau1.id_company = company1.id;
+  await plateau1.save();
+
   //arrange
   const data = {
-    code: 'ROVER1',
+    code: rover1.code,
     name: 'Name Updated',
-    x_position: 15,
-    y_position: 12,
+    x_position: 7,
+    y_position: 8,
     cardinal_direction: 'N',
-    id_company: 1,
+    id_company: company1.id,
   }
 
-  //act
+    //act
   const response = await client
     .put(`api/rovers/${rover1.id}`)
     .send(data)
@@ -278,6 +313,7 @@ test('update rover - invalid id', async ({ client, assert }) => {
     x_position: 15,
     y_position: 12,
     cardinal_direction: 'N',
+    id_company: company1.id,
   }
 
   //act
@@ -312,4 +348,14 @@ test('delete rover - invalid id', async ({ client, assert }) => {
 
   //assert
   response.assertStatus(HttpStatus.BAD_REQUEST);
+});
+
+test('move rover', async ({ client, assert }) => {
+
+  const response = await client
+  .put(`api/rovers/move/${rover1.id}?instruction=M`)
+  .end();
+
+  //assert
+  response.assertStatus(HttpStatus.OK);
 });

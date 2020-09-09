@@ -10,7 +10,7 @@ class RoverExceededPlateauSizeException extends LogicalException {
     }
 
   handle(error, { response }) {
-    response.status(HttpStatus.CONFLICT).send(error.message);
+    response.status(HttpStatus.PRECONDITION_FAILED).send(error.message);
   }
 }
 

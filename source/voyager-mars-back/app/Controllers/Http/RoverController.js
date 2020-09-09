@@ -9,8 +9,6 @@ const PlateauService = require('../../Services/PlateauService');
 
 const HttpStatus = use('http-status-codes');
 
-const NoPlateauCreatedException = use('App/Exceptions/Plateau/NoPlateauCreatedException');
-const RoverExceededPlateauSizeException = use('App/Exceptions/Rover/RoverExceededPlateauSizeException');
 const RoverNotFoundException = use('App/Exceptions/Rover/RoverNotFoundException');
 const RoverAlreadyExistException = use('App/Exceptions/Rover/RoverAlreadyExistException');
 
@@ -88,8 +86,7 @@ class RoverController {
       throw new RoverAlreadyExistException(code);
     }
     
-    const plateauService = new PlateauService();
-    plateauService.validatePlateauBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, id_company, code);
+    PlateauService.validatePlateauAndBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, id_company, code);
 
     return Rover.create({
       code,
@@ -151,8 +148,7 @@ class RoverController {
       throw new RoverNotFoundException(params.id);
     }
 
-    const plateauService = new PlateauService();
-    plateauService.validatePlateauBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, id_company, code);
+    PlateauService.validatePlateauAndBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, id_company, code);
 
     rover.merge({
       code,
@@ -195,8 +191,10 @@ class RoverController {
     const { instruction } = request.all();
     const rover = await Rover.find(params.id);
 
-    const movService = new MovementService();
-    movService.moveRover(Array.from(instruction), rover);
+    MovementService.moveRover(Array.from(instruction), rover);
+
+    PlateauService.validatePlateauAndBoundaries(await Plateau.query().where('id_company', rover.id_company).first(), rover.x_position, rover.y_position, rover.id_company, rover.code);
+
     rover.save();
     
     return rover;
