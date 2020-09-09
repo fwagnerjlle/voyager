@@ -151,7 +151,7 @@
         this.showRoverDialog = true;
       },
       async createOrEditRoverHandler() {
-        const { data: rovers } = await api.fetch({ search: this.search });
+          const { data: rovers } = await api.fetch({ search: this.search });
         this.rovers = rovers;
       },
       editRover(rover) {

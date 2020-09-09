@@ -1,8 +1,5 @@
 'use strict';
 
-const MovementService = require('../../Services/MovementService');
-const PlateauService = require('../../Services/PlateauService');
-
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -11,6 +8,8 @@ const HttpStatus = use('http-status-codes');
 
 const RoverNotFoundException = use('App/Exceptions/Rover/RoverNotFoundException');
 const RoverAlreadyExistException = use('App/Exceptions/Rover/RoverAlreadyExistException');
+const MovementService = use('App/Services/MovementService');
+const PlateauService = use('App/Services/PlateauService');
 
 const Rover = use('App/Models/Rover');
 const Plateau = use('App/Models/Plateau');
@@ -57,11 +56,9 @@ class RoverController {
    * GET rovers/create
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  */
+  async create ({ response }) {
     response.status(HttpStatus.METHOD_NOT_ALLOWED).send('Method not available for Rover. Use POST on /rovers to create a new rover');
   }
 
@@ -71,9 +68,8 @@ class RoverController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request }) {
     const {
       code,
       name,
@@ -89,7 +85,7 @@ class RoverController {
       throw new RoverAlreadyExistException(code);
     }
     
-    PlateauService.validatePlateauAndBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, id_company, code);
+    await PlateauService.validatePlateauAndBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, code);
 
     return Rover.create({
       code,
@@ -106,11 +102,8 @@ class RoverController {
    * GET rovers/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params }) {
     return Rover.query().where({id: params.id}).first();
   }
 
@@ -118,12 +111,9 @@ class RoverController {
    * Render a form to update an existing rover.
    * GET rovers/:id/edit
    *
-   * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
+  async edit ({ response }) {
     response.status(HttpStatus.METHOD_NOT_ALLOWED).send('Method not available for Rover. Use PUT on /rovers to update a Rover');
   }
 
@@ -133,9 +123,8 @@ class RoverController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
     const {
       code,
       name,
@@ -151,7 +140,7 @@ class RoverController {
       throw new RoverNotFoundException(params.id);
     }
 
-    PlateauService.validatePlateauAndBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, id_company, code);
+    await PlateauService.validatePlateauAndBoundaries(await Plateau.query().where({ id_company }).first(), x_position, y_position, code);
 
     rover.merge({
       code,
@@ -169,11 +158,9 @@ class RoverController {
    * Delete a plateau with id.
    * DELETE rovers/:id
    *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
+   * @param {object} params
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
     const rover = await Rover.query().where({id: params.id}).first();
 
     if(!rover) {
@@ -196,9 +183,9 @@ class RoverController {
     
     MovementService.moveRover(Array.from(instruction), rover);
 
-    PlateauService.validatePlateauAndBoundaries(await Plateau.query().where('id_company', rover.id_company).first(), rover.x_position, rover.y_position, rover.id_company, rover.code);
+    await PlateauService.validatePlateauAndBoundaries(await Plateau.query().where('id_company', rover.id_company).first(), rover.x_position, rover.y_position, rover.code);
 
-    rover.save();
+    await rover.save();
     
     return rover;
   }

@@ -25,10 +25,8 @@ class PlateauController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index ({ request }) {
     const {
       sortBy = 'name',
       descending = 'asc',
@@ -59,11 +57,9 @@ class PlateauController {
    * GET plateaus/create
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async create ({ request, response, view }) {
+  async create ({ response }) {
     response.status(HttpStatus.METHOD_NOT_ALLOWED).send('Method not available for Plateau. Use POST on /plateaus to create a new plateau');
   }
 
@@ -73,9 +69,8 @@ class PlateauController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request }) {
     const {
       code,
       name,
@@ -109,11 +104,8 @@ class PlateauController {
    * GET plateaus/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params }) {
     return Plateau.query().where({id: params.id}).first();
   }
 
@@ -121,12 +113,9 @@ class PlateauController {
    * Render a form to update an existing plateau.
    * GET plateaus/:id/edit
    *
-   * @param {object} ctx
-   * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
+  async edit ({ response }) {
     response.status(HttpStatus.METHOD_NOT_ALLOWED).send('Method not available for Plateau. Use PUT on /plateaus to update a Plateau');
   }
 
@@ -136,9 +125,8 @@ class PlateauController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request }) {
     const {
       code,
       name,
@@ -201,10 +189,8 @@ class PlateauController {
    * DELETE plateaus/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params }) {
     const plateau = await Plateau.query().where({id: params.id}).first();
 
     if(!plateau) {
@@ -213,7 +199,7 @@ class PlateauController {
      
     const roverCount = await Rover.query().where({ id_company: plateau.id_company }).getCount() > 0;
     if (roverCount){
-      throw new PlateauHasRoversException();
+      throw new PlateauHasRoversException(plateau.code);
     }
 
     return plateau.delete();

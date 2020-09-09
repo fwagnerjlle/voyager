@@ -15,10 +15,9 @@ class PlateauService {
      * @param {Plateau} plateau 
      * @param {int} rover_x_position 
      * @param {int} rover_y_position 
-     * @param {int} id_company 
      * @param {String} roverCode 
      */
-    static validatePlateauAndBoundaries(plateau, rover_x_position, rover_y_position, id_company, roverCode){
+    static validatePlateauAndBoundaries(plateau, rover_x_position, rover_y_position, roverCode){
         if (plateau){
             if (rover_x_position > plateau.upper_x_position || rover_y_position > plateau.upper_y_position){
                 throw new RoverExceededPlateauSizeException(roverCode, plateau.code);
