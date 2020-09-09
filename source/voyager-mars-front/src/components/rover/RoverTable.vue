@@ -112,6 +112,10 @@
           value: 'cardinal_direction',
         },
         {
+          text: 'Company',
+          value: 'company.name',
+        },
+        {
           text: 'Actions',
           value: 'actions',
           sortable: false,

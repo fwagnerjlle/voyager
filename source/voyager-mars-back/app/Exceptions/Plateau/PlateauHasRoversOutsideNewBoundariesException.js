@@ -4,9 +4,9 @@ const { LogicalException } = require('@adonisjs/generic-exceptions');
 
 const HttpStatus = use('http-status-codes');
 
-class NoPlateauCreatedException extends LogicalException {
-  constructor() {
-    super(`There isn't a Plateau created to this company`);
+class PlateauHasRoversException extends LogicalException {
+  constructor(code) {
+    super(`Plateau ${code} has rovers outside new boundaries values. It will not be updated.`);
   }
 
   handle(error, { response }) {
@@ -14,4 +14,4 @@ class NoPlateauCreatedException extends LogicalException {
   }
 }
 
-module.exports = NoPlateauCreatedException;
+module.exports = PlateauHasRoversException;

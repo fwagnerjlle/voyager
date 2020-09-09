@@ -69,9 +69,8 @@ export default {
 
     async moveRover() {
         try {
-          await api.move(this.rover.id, { instruction: this.instruction }).then(
-            (res) => { this.rover = res.data; },
-          );
+          const response = await api.move(this.rover.id, { instruction: this.instruction });
+          this.rover = response.data;
           Object.assign(this.value, this.rover);
         } catch (error) {
           this.$store.commit('SET_MESSAGE', error.response.data);

@@ -9,9 +9,6 @@ const RoverOutOfBoundsException = use('App/Exceptions/Rover/RoverOutOfBoundsExce
  */
 class MovementService {
 
-    constructor(){
-    }
-
     /**
      * Iterate over char array to move rover on the plateau
      * @param {char[]} chars 
@@ -60,6 +57,7 @@ class MovementService {
             rover.y_position--;
         } else if (rover.cardinal_direction == CardinalDirections.EAST.direction){
             rover.x_position++;
+        /* istanbul ignore else */
         } else if (rover.cardinal_direction == CardinalDirections.WEST.direction){
             rover.x_position--;
         }

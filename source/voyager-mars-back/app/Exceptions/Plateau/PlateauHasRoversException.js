@@ -6,7 +6,7 @@ const HttpStatus = use('http-status-codes');
 
 class PlateauHasRoversException extends LogicalException {
   constructor(code) {
-    super(`Plateau has rovers. It will not be deleted.`);
+    super(`Plateau ${code} has rovers. It will not be updated or deleted.`);
   }
 
   handle(error, { response }) {

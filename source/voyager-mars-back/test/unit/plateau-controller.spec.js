@@ -117,8 +117,11 @@ test('list plateaus - order by upper_y_position', async ({ client, assert }) => 
 });
 
 test('list plateaus - search', async ({ client, assert }) => {
+  company1 = await Factory.model('App/Models/Company').create();
+
   //arrange
   plateau1.name = 'Mars';
+  plateau1.id_company = company1.id;
   await plateau1.save();
 
   //act
@@ -148,7 +151,7 @@ test('create plateau', async ({ client, assert }) => {
 
   //arrange
   const data = {
-    code: 'Plateau1',
+    code: 'Plateau Code1',
     name: 'Mars',
     upper_x_position: 10,
     upper_y_position: 10,
@@ -243,7 +246,7 @@ test('edit plateau - not implemented', async ({ client, assert }) => {
 test('update plateau', async ({ client, assert }) => {
   //arrange
   const data = {
-    code: 'Plateau',
+    code: plateau1.code,
     name: 'Mars',
     upper_x_position: 10,
     upper_y_position: 10,
@@ -269,7 +272,77 @@ test('update plateau', async ({ client, assert }) => {
   assert.equal(updatedPlateau.id_company, data.id_company);
 });
 
+test('update plateau - updating company, but has rovers', async ({ client, assert }) => {
+  rover1 = await Factory.model('App/Models/Rover').create();
+
+  //arrange
+  const data = {
+    code: 'Plateau',
+    name: 'Mars',
+    upper_x_position: 0,
+    upper_y_position: 10,
+    id_company: 2,
+  }
+
+  //act
+  const response = await client
+    .put(`api/plateaus/${plateau1.id}`)
+    .send(data)
+    .end();
+
+  //assert
+  response.assertStatus(HttpStatus.PRECONDITION_FAILED);
+  response.assertText('Plateau ' + plateau1.code + ' has rovers. It will not be updated or deleted.');
+});
+
+test('update plateau - updating x_position failed', async ({ client, assert }) => {
+  rover1 = await Factory.model('App/Models/Rover').create();
+
+  //arrange
+  const data = {
+    code: 'Plateau',
+    name: 'Mars',
+    upper_x_position: 0,
+    upper_y_position: 10,
+    id_company: 1,
+  }
+
+  //act
+  const response = await client
+    .put(`api/plateaus/${plateau1.id}`)
+    .send(data)
+    .end();
+
+  //assert
+  response.assertStatus(HttpStatus.BAD_REQUEST);
+  response.assertText('Plateau ' + plateau1.code + ' has rovers outside new boundaries values. It will not be updated.');
+});
+
+test('update plateau - updating y_position failed', async ({ client, assert }) => {
+  rover1 = await Factory.model('App/Models/Rover').create();
+
+  //arrange
+  const data = {
+    code: 'Plateau',
+    name: 'Mars',
+    upper_x_position: 10,
+    upper_y_position: 0,
+    id_company: 1,
+  }
+
+  //act
+  const response = await client
+    .put(`api/plateaus/${plateau1.id}`)
+    .send(data)
+    .end();
+
+  //assert
+  response.assertStatus(HttpStatus.BAD_REQUEST);
+  response.assertText('Plateau ' + plateau1.code + ' has rovers outside new boundaries values. It will not be updated.');
+});
+
 test('update plateau - invalid id', async ({ client, assert }) => {
+  company1 = await Factory.model('App/Models/Company').create();
   //arrange
   const data = {
     code: 'Plateau',

@@ -3,14 +3,12 @@
 const NoPlateauCreatedException = use('App/Exceptions/Plateau/NoPlateauCreatedException');
 const RoverExceededPlateauSizeException = use('App/Exceptions/Rover/RoverExceededPlateauSizeException');
 const Plateau = use('App/Models/Plateau');
+const Rover = use('App/Models/Rover');
 
 /**
  * Service for plateau
  */
 class PlateauService {
-
-    constructor(){
-    }
 
     /**
      * Validate plateau bondaries when creating/updating a rover

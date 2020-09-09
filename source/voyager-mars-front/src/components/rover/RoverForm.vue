@@ -12,8 +12,8 @@
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-row>
-            <v-form ref="form" lazy-validation>
+          <v-form ref="form" lazy-validation>
+            <v-row>
               <v-col cols="12">
                 <v-text-field
                   label="Code"
@@ -56,8 +56,8 @@
                 >
                 </v-select>
               </v-col>
-            </v-form>
-          </v-row>
+            </v-row>
+          </v-form>
         </v-container>
       </v-card-text>
       <v-card-actions class="elevation-0 px-6 pb-4">
@@ -130,13 +130,12 @@ export default {
             await api.update(this.rover.id, this.rover);
             Object.assign(this.value, this.rover);
           }
+          this.close();
         } catch (error) {
           this.$store.commit('SET_MESSAGE', error.response.data);
         } finally {
           this.loading = false;
         }
-
-        this.close();
       }
     },
   },

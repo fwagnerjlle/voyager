@@ -96,7 +96,8 @@ export default {
             Object.assign(this.value, this.company);
             this.$emit('new:company');
           } else {
-            await api.update(this.company.id, this.company);
+            const response = await api.update(this.company.id, this.company);
+            this.company = response.data;
             Object.assign(this.value, this.company);
           }
         } catch (error) {

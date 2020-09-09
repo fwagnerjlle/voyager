@@ -12,8 +12,8 @@
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-row>
-            <v-form ref="form" lazy-validation>
+          <v-form ref="form" lazy-validation>
+            <v-row>
               <v-col cols="12">
                 <v-text-field
                   label="Code"
@@ -49,8 +49,8 @@
                 >
                 </v-select>
               </v-col>
-            </v-form>
-          </v-row>
+            </v-row>
+          </v-form>
         </v-container>
       </v-card-text>
       <v-card-actions class="elevation-0 px-6 pb-4">
@@ -78,10 +78,6 @@ export default {
     companies: [],
     rules: {
       required: value => !!value || 'Required.',
-      email: (value) => {
-        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return pattern.test(value) || 'Invalid e-mail.';
-      },
       onlyNumbers: (value) => {
         const pattern = /^[0-9]*$/;
         return pattern.test(value) || 'Invalid chars. Only accept numbers';
@@ -123,13 +119,12 @@ export default {
             await api.update(this.plateau.id, this.plateau);
             Object.assign(this.value, this.plateau);
           }
+          this.close();
         } catch (error) {
           this.$store.commit('SET_MESSAGE', error.response.data);
         } finally {
           this.loading = false;
         }
-
-        this.close();
       }
     },
   },

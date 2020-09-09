@@ -25,22 +25,25 @@ class RoverController {
    *
    * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
+  async index ({ request }) {
     const {
       sortBy = 'name',
       descending = 'asc',
       search = '',
     } = request.all();
 
-    const rovers = Rover.query().orderBy(sortBy, descending);
+    const rovers = Rover.query().with('company').orderBy(sortBy, descending);
 
     if (search) {
         rovers.where(function() {
         this.where('code', 'like', `%${search}%`)
-        .orWhere('name', 'like', `%${search}%`);
+        .orWhere('name', 'like', `%${search}%`)
+        .orWhere(function () {
+          this.whereHas('company', (cia) => {
+            cia.where('name', 'like', `%${search}%`);
+          })
+        })
       });
     }
 
@@ -190,7 +193,7 @@ class RoverController {
   async move ({ params, request }) {
     const { instruction } = request.all();
     const rover = await Rover.find(params.id);
-
+    
     MovementService.moveRover(Array.from(instruction), rover);
 
     PlateauService.validatePlateauAndBoundaries(await Plateau.query().where('id_company', rover.id_company).first(), rover.x_position, rover.y_position, rover.id_company, rover.code);

@@ -89,6 +89,10 @@
           value: 'upper_y_position',
         },
         {
+          text: 'Company',
+          value: 'company.name',
+        },
+        {
           text: 'Actions',
           value: 'actions',
           sortable: false,

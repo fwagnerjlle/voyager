@@ -13,6 +13,7 @@ const PlateauAlreadyExistException = use('App/Exceptions/Plateau/PlateauAlreadyE
 const PlateauNotFoundException = use('App/Exceptions/Plateau/PlateauNotFoundException');
 const PlateauHasRoversException = use('App/Exceptions/Plateau/PlateauHasRoversException');
 const PlateauAlreadyExistAtCompanyException = use('App/Exceptions/Plateau/PlateauAlreadyExistAtCompanyException');
+const PlateauHasRoversOutsideNewBoundariesException = use('App/Exceptions/Plateau/PlateauHasRoversOutsideNewBoundariesException');
 
 /**
  * Resourceful controller for interacting with plateaus
@@ -34,14 +35,19 @@ class PlateauController {
       search = '',
     } = request.all();
 
-    const plateaus = Plateau.query().orderBy(sortBy, descending);
-
+    const plateaus = Plateau.query().with('company').orderBy(sortBy, descending);
+    
     if (search) {
       plateaus.where(function() {
         this.where('code', 'like', `%${search}%`)
         .orWhere('name', 'like', `%${search}%`)
         .orWhere('upper_x_position', 'like', `%${search}%`)
-        .orWhere('upper_y_position', 'like', `%${search}%`);
+        .orWhere('upper_y_position', 'like', `%${search}%`)
+        .orWhere(function () {
+          this.whereHas('company', (cia) => {
+            cia.where('name', 'like', `%${search}%`);
+          })
+        })
       });
     }
 
@@ -142,9 +148,35 @@ class PlateauController {
     } = request.all();
 
     const plateau = await Plateau.query().where({id: params.id}).first();
-
     if(!plateau) {
       throw new PlateauNotFoundException(params.id);
+    }
+
+    /* istanbul ignore else */
+    if (id_company != plateau.id_company){
+      const rovers_at_plateau = await Rover.query().where('id_company', plateau.id_company).getCount() > 0;
+      /* istanbul ignore else */
+      if (rovers_at_plateau){
+        throw new PlateauHasRoversException(plateau.code);
+      }
+    }
+
+    /* istanbul ignore else */
+    if (upper_x_position != plateau.upper_x_position){
+      const rovers_over_x_position = await Rover.query().where('x_position', '>', upper_x_position).andWhere('id_company', id_company).getCount() > 0;
+      /* istanbul ignore else */
+      if (rovers_over_x_position){
+        throw new PlateauHasRoversOutsideNewBoundariesException(plateau.code);
+      }
+    }
+
+    /* istanbul ignore else */
+    if (upper_y_position != plateau.upper_y_position){
+      const rovers_over_y_position = await Rover.query().where('y_position', '>', upper_y_position).andWhere('id_company', id_company).getCount() > 0;
+      /* istanbul ignore else */
+      if (rovers_over_y_position){
+        throw new PlateauHasRoversOutsideNewBoundariesException(plateau.code);
+      }
     }
 
     plateau.merge({

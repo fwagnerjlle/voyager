@@ -8,8 +8,7 @@
     "app/**/*.js"
   ],
   "exclude": [
-    "app/Models/User.js",
-    "app/Models/Token.js"
+    "app/Models/*.js"
   ],
   "check-coverage": true,
   "per-file": true,

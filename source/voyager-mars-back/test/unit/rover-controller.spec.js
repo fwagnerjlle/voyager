@@ -220,6 +220,29 @@ test('create rover - RoverExceededPlateauSizeException', async ({ client, assert
   response.assertStatus(HttpStatus.PRECONDITION_FAILED);
 });
 
+test('create rover - no plateau created', async ({ client, assert }) => {
+  
+  //arrange
+  const data = {
+    code: 'ROVER1',
+    name: 'Rover 1',
+    x_position: 20,
+    y_position: 8,
+    cardinal_direction: 'S',
+    id_company: company1.id,
+  }
+
+  //act
+  const response = await client
+  .post('api/rovers')
+  .send(data)
+  .end();
+  
+  //assert
+  response.assertStatus(HttpStatus.BAD_REQUEST);
+  response.assertText('There isn\'t a Plateau created to this company');
+});
+
 test('create rover - code exists', async ({ client, assert }) => {
   //arrange
   const data = {
@@ -351,11 +374,26 @@ test('delete rover - invalid id', async ({ client, assert }) => {
 });
 
 test('move rover', async ({ client, assert }) => {
+  const data = { instruction: 'M' };
 
   const response = await client
-  .put(`api/rovers/move/${rover1.id}?instruction=M`)
+  .put(`api/rovers/move/${rover1.id}`)
+  .send(data)
   .end();
 
   //assert
   response.assertStatus(HttpStatus.OK);
+});
+
+test('move rover - out of bounds (below 0)', async ({ client, assert }) => {
+  const data = { instruction: 'LLMMM' };
+
+  //act
+  const response = await client
+    .put(`api/rovers/move/${rover1.id}`)
+    .send(data)
+    .end();
+ 
+  //assert
+  response.assertStatus(HttpStatus.EXPECTATION_FAILED);
 });
